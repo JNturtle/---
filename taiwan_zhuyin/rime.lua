@@ -246,25 +246,39 @@ end
 -- 加減乘除
 function count_translator(input, seg)
    -- 加法
-   if string.match(input, "%d+(ru8 )%d+") then
+   if string.match(input, "^%d+(ru8 )%d+") then
       local deliPos = string.find(input, "(ru8 )")
       local num = tonumber(string.sub(input, 1, deliPos-1)) + tonumber(string.sub(input, deliPos+4, -1))
       yield(Candidate("time", seg.start, seg._end, num, ""))
    end
+   if string.match(input, "^%d+%+%d+") then
+      local sum = 0
+      for s in string.gmatch(input, "(%-?%d+)") do
+        sum = sum + tonumber(s)
+      end
+      yield(Candidate("time", seg.start, seg._end, sum, ""))
+   end
    -- 減法
-   if string.match(input, "%d+(ru03)%d+") then
+   if string.match(input, "^%d+(ru03)%d+") then
       local deliPos = string.find(input, "(ru03)")
       local num = tonumber(string.sub(input, 1, deliPos-1)) - tonumber(string.sub(input, deliPos+4, -1))
       yield(Candidate("time", seg.start, seg._end, num, ""))
    end
+   if string.match(input, "^%d+(%-)%d+") then
+      local sum = 0
+      for s in string.gmatch(input, "(%-?%d+)") do
+        sum = sum + tonumber(s)
+      end
+      yield(Candidate("time", seg.start, seg._end, sum, ""))
+   end
    -- 乘法
-   if string.match(input, "%d+(t/6)%d+") then
+   if string.match(input, "^%d+(t/6)%d+") then
       local deliPos = string.find(input, "(t/6)")
       local num = tonumber(string.sub(input, 1, deliPos-1)) * tonumber(string.sub(input, deliPos+3, -1))
       yield(Candidate("time", seg.start, seg._end, num, ""))
    end
    -- 除法
-   if string.match(input, "%d+(tj6)%d+") then
+   if string.match(input, "^%d+(tj6)%d+") then
       local deliPos = string.find(input, "(tj6)")
       local num = tonumber(string.sub(input, 1, deliPos-1)) / tonumber(string.sub(input, deliPos+3, -1))
       yield(Candidate("time", seg.start, seg._end, num, ""))
