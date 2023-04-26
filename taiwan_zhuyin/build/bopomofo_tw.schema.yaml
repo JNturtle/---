@@ -40,6 +40,7 @@ engine:
     - lua_translator@time_translator
     - lua_translator@emoji_translator
     - lua_translator@text_translator
+    - lua_translator@count_translator
     - punct_translator
     - "table_translator@custom_phrase"
     - reverse_lookup_translator
@@ -62,8 +63,6 @@ key_binder:
     - {accept: ISO_Left_Tab, send: "Shift+Left", when: composing}
     - {accept: "Shift+Tab", send: "Shift+Left", when: composing}
     - {accept: Tab, send: "Shift+Right", when: composing}
-    - {accept: minus, send: Page_Up, when: has_menu}
-    - {accept: equal, send: Page_Down, when: has_menu}
     - {accept: comma, send: Page_Up, when: paging}
     - {accept: period, send: Page_Down, when: has_menu}
     - {accept: "Control+Shift+1", select: .next, when: always}
@@ -78,9 +77,6 @@ key_binder:
     - {accept: "Control+Shift+percent", toggle: extended_charset, when: always}
     - {accept: comma, send: comma, when: has_menu}
     - {accept: period, send: period, when: has_menu}
-    - {accept: minus, send: minus, when: has_menu}
-    - {accept: minus, send: Page_Up, when: paging}
-    - {accept: equal, send: Page_Down, when: has_menu}
   import_preset: default
 menu:
   alternative_select_keys: ABCDEFGHIJ
@@ -89,7 +85,7 @@ punctuator:
   full_shape:
     " ": {commit: "　"}
     "!": ["!", "！"]
-    "\"": {pair: ["“", "”"]}
+    "\"": {pair: ["\"", "\"", "“", "”"]}
     "#": ["＃", "⌘"]
     "$": ["￥", "$", "€", "£", "¥", "¢", "¤"]
     "%": ["％", "°", "℃"]
@@ -117,7 +113,7 @@ punctuator:
     "~": "～"
   half_shape:
     "!": {commit: "！"}
-    "\"": {pair: ["“", "”"]}
+    "\"": ["\"",  "“", "”"]
     "#": {commit: "#"}
     "$": {commit: "$"}
     "%": {commit: "%"}
@@ -126,7 +122,7 @@ punctuator:
     "(": {commit: "("}
     ")": {commit: ")"}
     "*": {commit: "※"}
-    "+": {commit: "+"}
+    "+": "+"
     ":": ["：", "；"]
     "<": {commit: "，"}
     "=": {commit: "="}
@@ -137,10 +133,10 @@ punctuator:
     "\\": {commit: "、"}
     "]": ["」", "】", "》", "〕", "］"]
     "^": {commit: "^"}
-    _: {commit: "-"}
+    _: {commit: "_"}
     "`": "`"
     "{": ["『", "〖", "〈", "｛"]
-    "|": ["·", "|", "｜", "§", "¦"]
+    "|": ["|", "·", "｜", "§", "¦"]
     "}": ["』", "〗", "〉", "｝"]
     "~": {commit: "~"}
 recognizer:
@@ -230,10 +226,10 @@ speller:
     - "abbrev/^([A-Za-z]+)\\d$/$1/"
     - "abbrev/^([bpmfdtnlgkhjqxZCSrzcs]).+(\\d)$/$1$2/"
     - "xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR12345|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347|"
-  alphabet: "1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347"
+  alphabet: "1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347=+"
   delimiter: "'"
-  finals: " 6347" 
-  initials: "1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/-"
+  finals: " " 
+  initials: "1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/-6347"
   use_space: true
 switches:
   - name: ascii_mode
@@ -246,5 +242,5 @@ switches:
 translator:
   dictionary: terra_pinyin
   preedit_format:
-    - "xlit|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347'|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˉˊˇˋ˙ |"
+    - "xlit|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347+'|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˉˊˇˋ˙ +|"
   prism: bopomofo_tw
