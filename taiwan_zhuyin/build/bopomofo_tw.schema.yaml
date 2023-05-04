@@ -41,6 +41,7 @@ engine:
     - lua_translator@emoji_translator
     - lua_translator@text_translator
     - lua_translator@count_translator
+    - lua_translator@abbreviation_translator
     - punct_translator
     - "table_translator@custom_phrase"
     - reverse_lookup_translator
@@ -79,7 +80,7 @@ key_binder:
     - {accept: period, send: period, when: has_menu}
   import_preset: default
 menu:
-  alternative_select_keys: ABCDEFGHIJ
+  alternative_select_keys: QWEASDZXC
   page_size: 9
 punctuator:
   full_shape:
@@ -121,7 +122,7 @@ punctuator:
     "'": {pair: ["'", "\"", "‘", "’"]}
     "(": {commit: "("}
     ")": {commit: ")"}
-    "*": {commit: "※"}
+    "*": ["*","※"]
     "+": "+"
     ":": ["：", "；"]
     "<": {commit: "，"}
@@ -226,7 +227,7 @@ speller:
     - "abbrev/^([A-Za-z]+)\\d$/$1/"
     - "abbrev/^([bpmfdtnlgkhjqxZCSrzcs]).+(\\d)$/$1$2/"
     - "xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR12345|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347|"
-  alphabet: "1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347=+"
+  alphabet: "1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347=+*"
   delimiter: "'"
   finals: " " 
   initials: "1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/-6347"
@@ -242,5 +243,5 @@ switches:
 translator:
   dictionary: terra_pinyin
   preedit_format:
-    - "xlit|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347+'|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˉˊˇˋ˙ +|"
+    - "xlit|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347'|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˉˊˇˋ˙ |"
   prism: bopomofo_tw
