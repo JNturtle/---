@@ -245,42 +245,106 @@ end
 
 -- 加減乘除
 function count_translator(input, seg)
-   -- 加法
-   if string.match(input, "^%d+(ru8 )%d+") then
-      local deliPos = string.find(input, "(ru8 )")
-      local num = tonumber(string.sub(input, 1, deliPos-1)) + tonumber(string.sub(input, deliPos+4, -1))
-      yield(Candidate("time", seg.start, seg._end, num, ""))
-   end
-   if string.match(input, "^%d+%+%d+") then
+   -- 加減乘除統一，僅從左至右計算
+   if string.match(input, "^%d+[%+%-%*/]%d+") then
       local sum = 0
-      for s in string.gmatch(input, "(%-?%d+)") do
-        sum = sum + tonumber(s)
+      for s in string.gmatch(input, "([%+%-%*/]?%d+)") do
+         if string.match(s, "%*") then
+            sum = sum * tonumber(string.sub(s,2))
+         elseif string.match(s, "/") then
+            sum = sum / tonumber(string.sub(s,2))
+         else
+            sum = sum + tonumber(s)
+         end
       end
       yield(Candidate("time", seg.start, seg._end, sum, ""))
    end
-   -- 減法
-   if string.match(input, "^%d+(ru03)%d+") then
-      local deliPos = string.find(input, "(ru03)")
-      local num = tonumber(string.sub(input, 1, deliPos-1)) - tonumber(string.sub(input, deliPos+4, -1))
-      yield(Candidate("time", seg.start, seg._end, num, ""))
-   end
-   if string.match(input, "^%d+(%-)%d+") then
-      local sum = 0
-      for s in string.gmatch(input, "(%-?%d+)") do
-        sum = sum + tonumber(s)
+end
+
+-- 縮寫abbreviation
+function abbreviation_translator(input, seg)
+   -- meal mel 餐點
+   local dishes = {"便當", "炸物", "炒飯", "麻辣燙", "速食", "麥片"}   
+   if string.match(input, "^mel$") then
+      for i = 1, #dishes do
+         yield(Candidate("meal", seg.start, seg._end, dishes[i], ""))
       end
-      yield(Candidate("time", seg.start, seg._end, sum, ""))
+   elseif string.match(input, "^mel%d$") then
+      local index = tonumber(string.sub(input, 4))
+      if index >= 1 and index <= #dishes then
+         yield(Candidate("meal", seg.start, seg._end, dishes[index], ""))
+      end
    end
-   -- 乘法
-   if string.match(input, "^%d+(t/6)%d+") then
-      local deliPos = string.find(input, "(t/6)")
-      local num = tonumber(string.sub(input, 1, deliPos-1)) * tonumber(string.sub(input, deliPos+3, -1))
-      yield(Candidate("time", seg.start, seg._end, num, ""))
+   -- drinkl drk 飲料
+   local brands = {"純喫茶", "五十嵐", "麻古", "牛奶"}	
+   if string.match(input, "^drk$") then
+      for i = 1, #brands do
+         yield(Candidate("drinkl", seg.start, seg._end, brands[i], ""))
+      end
+   elseif string.match(input, "^drk%d$") then
+      local index = tonumber(string.sub(input, 4))
+      if index >= 1 and index <= #brands then
+         yield(Candidate("drinkl", seg.start, seg._end, brands[index], ""))
+      end
    end
-   -- 除法
-   if string.match(input, "^%d+(tj6)%d+") then
-      local deliPos = string.find(input, "(tj6)")
-      local num = tonumber(string.sub(input, 1, deliPos-1)) / tonumber(string.sub(input, deliPos+3, -1))
-      yield(Candidate("time", seg.start, seg._end, num, ""))
+   -- shop shp 店家
+   local stores = {"7-11", "美廉社", "家樂福", "全家"}	  
+   if string.match(input, "^shp$") then
+      for i = 1, #stores do
+         yield(Candidate("shop", seg.start, seg._end, stores[i], ""))
+      end
+   elseif string.match(input, "^shp%d$") then
+      local index = tonumber(string.sub(input, 4))
+      if index >= 1 and index <= #stores then
+         yield(Candidate("shop", seg.start, seg._end, stores[index], ""))
+      end
+   end
+   -- staion stn 站點 像是車站 機場
+   local stations = {"站點1", "站點2", "站點3", "站點4", "站點5"}  
+   if string.match(input, "^stn$") then
+      for i = 1, #stations do
+         yield(Candidate("station", seg.start, seg._end, stations[i], ""))
+      end
+   elseif string.match(input, "^stn%d$") then
+      local index = tonumber(string.sub(input, 4))
+      if index >= 1 and index <= #stations then
+         yield(Candidate("station", seg.start, seg._end, stations[index], ""))
+      end
+   end
+   -- location lcn 地點
+   local locations = {"地點1", "地點2", "地點3"}	 
+   if string.match(input, "^lcn$") then
+      for i = 1, #locations do
+         yield(Candidate("location", seg.start, seg._end, locations[i], ""))
+      end
+   elseif string.match(input, "^lcn%d$") then
+      local index = tonumber(string.sub(input, 4))
+      if index >= 1 and index <= #locations then
+         yield(Candidate("location", seg.start, seg._end, locations[index], ""))
+      end
+   end
+   -- client clt 客戶
+   local clients = {"客戶1", "客戶2", "客戶3"}
+   if string.match(input, "^clt$") then	  
+      for i = 1, #clients do
+         yield(Candidate("client", seg.start, seg._end, clients[i], ""))
+      end
+   elseif string.match(input, "^clt%d$") then
+      local index = tonumber(string.sub(input, 4))
+      if index >= 1 and index <= #clients then
+         yield(Candidate("client", seg.start, seg._end, clients[index], ""))
+      end
+   end
+   -- life field lfd 生活領域
+   local categories = {"工作", "個人發展", "社交", "旅遊", "理財", "家庭", "健康"}
+   if string.match(input, "^lfd$") then	  
+      for i = 1, #categories do
+         yield(Candidate("life field", seg.start, seg._end, categories[i], ""))
+      end
+   elseif string.match(input, "^lfd%d$") then
+      local index = tonumber(string.sub(input, 4))
+      if index >= 1 and index <= #categories then
+         yield(Candidate("life field", seg.start, seg._end, categories[index], ""))
+      end
    end
 end
